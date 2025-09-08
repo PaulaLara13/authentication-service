@@ -1,0 +1,15 @@
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-undertow'
+    implementation project(':usecase')
+    implementation project(':model')
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation "org.mapstruct:mapstruct:${rootProject.ext.mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${rootProject.ext.mapstructVersion}"
+}
+
+
+configurations{
+	implementation.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+}
