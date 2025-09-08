@@ -15,6 +15,6 @@ public record UserDto(BigInteger id, String name,
                       String phone,
                       String mail,
                       double salary,
-                        @JsonIgnore String message) {
+                      @JsonIgnore String message) {
 
 }

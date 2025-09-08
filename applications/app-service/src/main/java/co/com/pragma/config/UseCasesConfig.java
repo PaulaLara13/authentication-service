@@ -1,6 +1,6 @@
 package co.com.pragma.config;
 
-import co.com.pragma.model.user.gateways.UsuarioRepository;
+import co.com.pragma.model.user.gateways.UserRepository;
 import co.com.pragma.usecase.usuario.UserUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.FilterType;
         useDefaultFilters = false)
 public class UseCasesConfig {
     @Bean
-    public UserUseCase userUseCase(UsuarioRepository usuarioRepository) {
-        return new UserUseCase(usuarioRepository);
+    public UserUseCase userUseCase(UserRepository userRepository) {
+        return new UserUseCase(userRepository);
     }
 }

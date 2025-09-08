@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Usuario {
+public class User {
     //se colocan los atributos
     private BigInteger id;
     private String name;

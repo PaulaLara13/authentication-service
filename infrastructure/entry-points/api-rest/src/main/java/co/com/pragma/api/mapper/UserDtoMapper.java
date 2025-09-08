@@ -2,7 +2,7 @@ package co.com.pragma.api.mapper;
 
 import co.com.pragma.api.dto.CreateUserDto;
 import co.com.pragma.api.dto.UserDto;
-import co.com.pragma.model.user.Usuario;
+import co.com.pragma.model.user.User;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserDtoMapper {
 
-    UserDto toResponse(Usuario usuario);
+    UserDto toResponse(User user);
 
-    List<UserDto> toResponseList(List<Usuario> users);
+    List<UserDto> toResponseList(List<User> users);
 
-    Usuario toModel(CreateUserDto createUserDto);
+    User toModel(CreateUserDto createUserDto);
 
 
 
