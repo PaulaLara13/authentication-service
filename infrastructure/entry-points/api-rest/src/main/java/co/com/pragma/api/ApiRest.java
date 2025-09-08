@@ -3,6 +3,7 @@ package co.com.pragma.api;
 import co.com.pragma.api.dto.CreateUserDto;
 import co.com.pragma.api.dto.UserDto;
 import co.com.pragma.api.mapper.UserDtoMapper;
+import co.com.pragma.model.user.ApiResponse;
 import co.com.pragma.usecase.usuario.UserUseCase;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -24,18 +25,17 @@ import static co.com.pragma.common.Constants.*;
 @AllArgsConstructor
 public class ApiRest {
 
-    private final UserUseCase userUseCase; //Inyeccion del private final
+    private final UserUseCase userUseCase;
 
     private final UserDtoMapper userMapper;
     private static final Logger log = LoggerFactory.getLogger(ApiRest.class);
 
 
     @PostMapping
-    public Mono<ResponseEntity<UserDto>> createUser(@RequestBody CreateUserDto createUserDto) {
+    public Mono<ResponseEntity<ApiResponse>> createUser(@RequestBody CreateUserDto createUserDto) {
         log.info(START_CREATE_USER, createUserDto);
         return userUseCase.saveUser(userMapper.toModel(createUserDto))
-                .map(userMapper::toResponse)
-                .map(userDto -> ResponseEntity.status(HttpStatus.CREATED).body(userDto));
+                .map(apiResponse -> ResponseEntity.status(HttpStatus.CREATED).body(apiResponse));
     }
 
 
@@ -49,9 +49,9 @@ public class ApiRest {
     }
 
     @DeleteMapping(path = "/{id}")
-    public Mono<ResponseEntity<Void>> deleteUsuario(@PathVariable(name="id") BigInteger id){
+    public Mono<ResponseEntity<Void>> deleteUser(@PathVariable(name="id") BigInteger id){
         log.info(START_DELETE, id);
-        return userUseCase.deleteUsuarioId(id)
+        return userUseCase.deleteUserId(id)
                 .thenReturn(ResponseEntity.ok().build());
     }
 

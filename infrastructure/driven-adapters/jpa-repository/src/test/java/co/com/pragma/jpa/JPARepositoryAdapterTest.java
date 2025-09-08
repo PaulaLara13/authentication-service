@@ -1,7 +1,7 @@
 package co.com.pragma.jpa;
 import co.com.pragma.jpa.entity.UserEntity;
 import co.com.pragma.jpa.exception.UserNotFoundException;
-import co.com.pragma.model.user.Usuario;
+import co.com.pragma.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,17 +36,17 @@ public class JPARepositoryAdapterTest {
     @Test
     void guardar_deberiaMapearGuardarYRetornarDominio() {
         // Arrange
-        Usuario usuarioEntrada = mock(Usuario.class);
+        User usuarioEntrada = mock(User.class);
         UserEntity entidadParaGuardar = mock(UserEntity.class);
         UserEntity entidadGuardada = mock(UserEntity.class);
-        Usuario usuarioMapeado = mock(Usuario.class);
+        User usuarioMapeado = mock(User.class);
 
         doReturn(entidadParaGuardar).when(adapter).toData(usuarioEntrada);
         when(repository.save(entidadParaGuardar)).thenReturn(entidadGuardada);
         doReturn(usuarioMapeado).when(adapter).toEntity(entidadGuardada);
 
         // Act + Assert
-        StepVerifier.create(adapter.guardar(usuarioEntrada))
+        StepVerifier.create(adapter.saveUser(usuarioEntrada))
                 .expectNext(usuarioMapeado)
                 .verifyComplete();
 
@@ -66,7 +66,7 @@ public class JPARepositoryAdapterTest {
         when(repository.existsByMail(correo)).thenReturn(true);
 
         // Act + Assert
-        StepVerifier.create(adapter.existePorCorreo(correo))
+        StepVerifier.create(adapter.existsByMail(correo))
                 .expectNext(true)
                 .verifyComplete();
 
@@ -81,7 +81,7 @@ public class JPARepositoryAdapterTest {
         when(repository.existsByMail(correo)).thenReturn(false);
 
         // Act + Assert
-        StepVerifier.create(adapter.existePorCorreo(correo))
+        StepVerifier.create(adapter.existsByMail(correo))
                 .expectNext(false)
                 .verifyComplete();
 
@@ -96,9 +96,9 @@ public class JPARepositoryAdapterTest {
         UserEntity e2 = mock(UserEntity.class);
         List<UserEntity> entidades = List.of(e1, e2);
 
-        Usuario u1 = mock(Usuario.class);
-        Usuario u2 = mock(Usuario.class);
-        List<Usuario> usuarios = List.of(u1, u2);
+        User u1 = mock(User.class);
+        User u2 = mock(User.class);
+        List<User> usuarios = List.of(u1, u2);
 
         when(repository.findAll()).thenReturn(entidades);
         // Stub del método protegido toList
@@ -123,7 +123,7 @@ public class JPARepositoryAdapterTest {
         when(usuarioEntity.getId()).thenReturn(id);
 
         // Act + Assert
-        StepVerifier.create(adapter.deleteUsuario(id))
+        StepVerifier.create(adapter.deleteUser(id))
                 .verifyComplete();
 
         verify(repository).findById(id);
@@ -138,7 +138,7 @@ public class JPARepositoryAdapterTest {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         // Act + Assert
-        StepVerifier.create(adapter.deleteUsuario(id))
+        StepVerifier.create(adapter.deleteUser(id))
                 .expectErrorSatisfies(throwable ->
                         assertThat(throwable).isInstanceOf(UserNotFoundException.class))
                 .verify();

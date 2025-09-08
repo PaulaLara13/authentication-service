@@ -28,6 +28,4 @@ public class UserEntity {
     private double salary;
 
 
-
-
 }

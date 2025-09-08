@@ -18,6 +18,9 @@ public final class Constants {
     public static final String START_CREATE_USER = "Iniciando creación de un nuevo usuario {}";
     public static final String START_GET_ALL_USERS = "Iniciando la obtención de todos los usuarios";
     public static final String START_DELETE = "Iniciando eliminación de usuario con id: {}";
+    public static final String REQUESTS_CREATEID = "Solicitud creada con éxito. ID: ";
+    public static final String REQUESTS_CREATE_NOTID = "Solicitud creada, pero no se obtuvo ID.";
+    public static final String UNEXPECTED_ERROR = "Ocurrió un error inesperado. Intente más tarde.";
     public static final int MAX_USERS = 1000;
     public static final String DEFAULT_ROLE = "USER";
 }

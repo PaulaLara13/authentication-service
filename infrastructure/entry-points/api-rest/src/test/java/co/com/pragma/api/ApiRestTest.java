@@ -3,8 +3,9 @@ package co.com.pragma.api;
 import co.com.pragma.api.dto.CreateUserDto;
 import co.com.pragma.api.dto.UserDto;
 import co.com.pragma.api.mapper.UserDtoMapper;
+import co.com.pragma.model.user.ApiResponse;
+import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.usuario.UserUseCase;
-import co.com.pragma.model.user.Usuario;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,12 +36,13 @@ class ApiRestTest {
     void crearUsuario_deberiaRetornar201ConCuerpo() {
         // Arrange
         CreateUserDto createUserDto = mock(CreateUserDto.class);
-        Usuario usuario = mock(Usuario.class);
-        Usuario usuarioGuardado = mock(Usuario.class);
+        User user = mock(User.class);
+        User usuarioGuardado = mock(User.class);
         UserDto userDtoEsperado = mock(UserDto.class);
+        ApiResponse apiResponse = new ApiResponse("Solicitud creada con éxito. ID:");
 
-        when(userMapper.toModel(createUserDto)).thenReturn(usuario);
-        when(userUseCase.saveUser(usuario)).thenReturn(Mono.just(usuarioGuardado));
+        when(userMapper.toModel(createUserDto)).thenReturn(user);
+        when(userUseCase.saveUser(user)).thenReturn(Mono.just(apiResponse));
         when(userMapper.toResponse(usuarioGuardado)).thenReturn(userDtoEsperado);
 
         // Act + Assert
@@ -53,7 +55,7 @@ class ApiRestTest {
 
         // Verify
         verify(userMapper).toModel(createUserDto);
-        verify(userUseCase).saveUser(usuario);
+        verify(userUseCase).saveUser(user);
         verify(userMapper).toResponse(usuarioGuardado);
         verifyNoMoreInteractions(userUseCase, userMapper);
     }
@@ -61,8 +63,8 @@ class ApiRestTest {
     @Test
     void obtenerTodos_deberiaRetornar200ConLista() {
         // Arrange
-        Usuario usuario1 = mock(Usuario.class);
-        Usuario usuario2 = mock(Usuario.class);
+        User usuario1 = mock(User.class);
+        User usuario2 = mock(User.class);
         UserDto dto1 = mock(UserDto.class);
         UserDto dto2 = mock(UserDto.class);
 
@@ -108,10 +110,10 @@ class ApiRestTest {
     void eliminarUsuario_deberiaInvocarCasoDeUsoYRetornar200() {
         // Arrange
         BigInteger id = BigInteger.valueOf(123L);
-        when(userUseCase.deleteUsuarioId(id)).thenReturn(Mono.empty());
+        when(userUseCase.deleteUserId(id)).thenReturn(Mono.empty());
 
         // Act + Assert
-        StepVerifier.create(apiRest.deleteUsuario(id))
+        StepVerifier.create(apiRest.deleteUser(id))
                 .assertNext(response -> {
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
                     assertThat(response.getBody()).isNull();
@@ -120,7 +122,7 @@ class ApiRestTest {
 
         // Verify que se llamó con el id correcto
         ArgumentCaptor<BigInteger> idCaptor = ArgumentCaptor.forClass(BigInteger.class);
-        verify(userUseCase).deleteUsuarioId(idCaptor.capture());
+        verify(userUseCase).deleteUserId(idCaptor.capture());
         assertThat(idCaptor.getValue()).isEqualTo(id);
 
         verifyNoMoreInteractions(userUseCase);
