@@ -1,8 +1,10 @@
 package co.com.pragma.jpa;
 
+import co.com.pragma.jpa.entity.RoleEntity;
 import co.com.pragma.jpa.entity.UserEntity;
 import co.com.pragma.jpa.exception.UserNotFoundException;
 import co.com.pragma.jpa.helper.AdapterOperations;
+import co.com.pragma.model.user.Role;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import jakarta.transaction.Transactional;
@@ -17,17 +19,45 @@ import java.math.BigInteger;
 @Repository
 public class JPARepositoryAdapter extends AdapterOperations<User, UserEntity, BigInteger, JPARepository> implements UserRepository
 {
+    private final RoleJPARepository roleRepo;
 
-    public JPARepositoryAdapter(JPARepository repository, ObjectMapper mapper) {
-        super(repository, mapper, d -> mapper.map(d, User.class));
+
+    public JPARepositoryAdapter(JPARepository repository, RoleJPARepository roleRepo, ObjectMapper mapper) {
+        super(repository, mapper, d -> null); // no usar map automático, haremos manual
+        this.roleRepo = roleRepo;
+    }
+
+    private User toDomainUser(UserEntity e) {
+        if (e == null) return null;
+        var u = new User();
+        u.setId(e.getId());
+        u.setName(e.getName());
+        u.setLastname(e.getLastname());
+        u.setMail(e.getMail());
+        u.setSalary(e.getSalary());
+        u.setPasswordHash(e.getPasswordHash());
+        var r = new Role();
+        r.setId(e.getRole().getId());
+        r.setName(e.getRole().getName());
+        u.setRole(r);
+        return u;
     }
 
     @Transactional
     @Override
     public Mono<User> saveUser(User user) {
         return Mono.fromCallable(() -> {
-            UserEntity userEntity = repository.save(toData(user));
-            return toEntity(userEntity);
+            RoleEntity role = roleRepo.findById(user.getRole().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Rol no existe"));
+            UserEntity e = new UserEntity();
+            e.setId(user.getId());
+            e.setName(user.getName());
+            e.setLastname(user.getLastname());
+            e.setMail(user.getMail());
+            e.setSalary(user.getSalary());
+            e.setPasswordHash(user.getPasswordHash());
+            e.setRole(role);
+            return toDomainUser(repository.save(e));
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -39,8 +69,9 @@ public class JPARepositoryAdapter extends AdapterOperations<User, UserEntity, Bi
 
     @Override
     public Flux<User> getAllUsers() {
-        return Mono.fromCallable(() -> toList(repository.findAll()))
+        return Mono.fromCallable(() -> (Iterable<UserEntity>) repository.findAll())
                 .flatMapMany(Flux::fromIterable)
+                .map(this::toDomainUser)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -48,10 +79,16 @@ public class JPARepositoryAdapter extends AdapterOperations<User, UserEntity, Bi
     @Override
     public Mono<Void> deleteUser(BigInteger id) {
         return Mono.fromRunnable(() -> {
-            UserEntity usuario = repository.findById(id)
-                    .orElseThrow(UserNotFoundException::new);
-            repository.deleteById(usuario.getId());
+            UserEntity user = repository.findById(id)
+                    .orElseThrow(co.com.pragma.jpa.exception.UserNotFoundException::new);
+            repository.deleteById(user.getId());
         }).subscribeOn(Schedulers.boundedElastic()).then();
     }
 
+    @Override
+    public Mono<User> findByMail(String email) {
+        return Mono.fromCallable(() -> repository.findByMail(email).map(this::toDomainUser).orElse(null))
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMap(u -> u == null ? Mono.empty() : Mono.just(u));
+    }
 }

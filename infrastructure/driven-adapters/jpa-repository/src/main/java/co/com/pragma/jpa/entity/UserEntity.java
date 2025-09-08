@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,14 @@ public class UserEntity {
     private Integer phone;
     private String mail;
     private double salary;
+
+    @Column(nullable = false)
+    private String passwordHash;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private RoleEntity role;
+
 
 
 }

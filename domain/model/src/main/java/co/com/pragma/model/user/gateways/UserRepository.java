@@ -15,4 +15,6 @@ public interface UserRepository {
     Flux<User> getAllUsers();
 
     Mono<Void> deleteUser(BigInteger id);
+
+    Mono findByMail(String email);
 }

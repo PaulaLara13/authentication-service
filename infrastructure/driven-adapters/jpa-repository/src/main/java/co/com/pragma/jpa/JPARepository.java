@@ -5,9 +5,13 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 public interface JPARepository extends CrudRepository<UserEntity, BigInteger>, QueryByExampleExecutor<UserEntity> {
 
-    boolean existsByMail(String correo);
+    boolean existsByMail(String mail);
+
+    Optional<UserEntity> findByMail(String mail);
+
 
 }

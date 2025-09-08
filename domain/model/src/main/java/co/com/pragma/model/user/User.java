@@ -23,5 +23,7 @@ public class User {
     private String mail;
     private double salary;
     private String message;
+    private Role role;
+    private String passwordHash;
 
 }
