@@ -37,26 +37,22 @@ class ApiRestTest {
         // Arrange
         CreateUserDto createUserDto = mock(CreateUserDto.class);
         User user = mock(User.class);
-        User usuarioGuardado = mock(User.class);
-        UserDto userDtoEsperado = mock(UserDto.class);
         ApiResponse apiResponse = new ApiResponse("Solicitud creada con éxito. ID:");
 
         when(userMapper.toModel(createUserDto)).thenReturn(user);
         when(userUseCase.saveUser(user)).thenReturn(Mono.just(apiResponse));
-        when(userMapper.toResponse(usuarioGuardado)).thenReturn(userDtoEsperado);
 
         // Act + Assert
         StepVerifier.create(apiRest.createUser(createUserDto))
                 .assertNext(response -> {
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-                    assertThat(response.getBody()).isSameAs(userDtoEsperado);
+                    assertThat(response.getBody()).isSameAs(apiResponse);
                 })
                 .verifyComplete();
 
         // Verify
         verify(userMapper).toModel(createUserDto);
         verify(userUseCase).saveUser(user);
-        verify(userMapper).toResponse(usuarioGuardado);
         verifyNoMoreInteractions(userUseCase, userMapper);
     }
 
