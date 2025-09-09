@@ -16,5 +16,5 @@ public interface UserRepository {
 
     Mono<Void> deleteUser(BigInteger id);
 
-    Mono findByMail(String email);
+    Mono<User> findByMail(String email);
 }

@@ -2,14 +2,15 @@ package co.com.pragma.jpa;
 
 import co.com.pragma.jpa.entity.RoleEntity;
 import co.com.pragma.model.user.Role;
-import co.com.pragma.model.user.gateways.RoleRpository;
+import co.com.pragma.model.user.gateways.RoleRepository;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.math.BigInteger;
-
-public class RoleRepositoryAdapter implements RoleRpository {
+@Repository
+public class RoleRepositoryAdapter implements RoleRepository {
 
     private final RoleJPARepository roleRepo;
 

@@ -2,6 +2,7 @@ package co.com.pragma.usecase.usuario;
 
 import co.com.pragma.model.user.ApiResponse;
 import co.com.pragma.model.user.User;
+import co.com.pragma.model.user.gateways.RoleRepository;
 import co.com.pragma.model.user.gateways.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,11 +25,14 @@ public class UserUseCaseTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private RoleRepository roleRepository;
+
     private UserUseCase userUseCase;
 
     @BeforeEach
     void setUp() {
-        userUseCase = new UserUseCase(userRepository);
+        userUseCase = new UserUseCase(userRepository, roleRepository);
     }
 
     // Utilidad para crear un mock de Usuario con datos válidos

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -30,7 +31,7 @@ public class ApiRest {
     private final UserDtoMapper userMapper;
     private static final Logger log = LoggerFactory.getLogger(ApiRest.class);
 
-
+    @PreAuthorize("hasAnyRole('ADMIN','ADVISOR')")
     @PostMapping
     public Mono<ResponseEntity<ApiResponse>> createUser(@RequestBody CreateUserDto createUserDto) {
         log.info(START_CREATE_USER, createUserDto);

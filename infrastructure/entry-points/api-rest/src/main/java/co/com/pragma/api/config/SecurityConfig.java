@@ -10,11 +10,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -47,13 +51,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthConverter() {
+    public Converter<Jwt, Mono<? extends AbstractAuthenticationToken>> jwtAuthConverter() {
         return jwt -> {
             String role = (String) jwt.getClaims().getOrDefault("role", "");
-            var authorities = role.isBlank()
-                    ? java.util.List.<GrantedAuthority>of()
-                    : java.util.List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role));
-            return new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(jwt, authorities, jwt.getSubject());
+            List authorities = role == null || role.isBlank()
+                    ? List.of()
+                    : List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            var auth = new JwtAuthenticationToken(
+                    jwt, authorities, jwt.getSubject()
+            );
+            return Mono.just(auth);
         };
     }
 
