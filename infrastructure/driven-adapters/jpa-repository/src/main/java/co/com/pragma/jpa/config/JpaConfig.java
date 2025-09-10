@@ -41,13 +41,20 @@ public class JpaConfig {
             @Value("${spring.jpa.databasePlatform}") String dialect) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("co.com.pragma.jpa");
+        em.setPackagesToScan(
+            "co.com.pragma.jpa",
+            "co.com.pragma.jpa.entity",
+            "co.com.pragma.model"
+        );
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", dialect);
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.format_sql", "true");
         properties.setProperty("hibernate.hbm2ddl.auto", "update"); // TODO: remove this for non auto create schema
         em.setJpaProperties(properties);
 

@@ -1,18 +1,25 @@
 package co.com.pragma.model.user.gateways;
 
 import co.com.pragma.model.user.User;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
 
-    Mono<User> saveUser(User user);
+    User saveUser(User user);
 
-    Mono<Boolean> existsByMail(String mail);
+    boolean existsByMail(String mail);
 
-    Flux<User> getAllUsers();
+    List<User> getAllUsers();
 
-    Mono<Void> deleteUser(BigInteger id);
+    void deleteUser(BigInteger id);
+    
+    /**
+     * Find a user by email
+     * @param email the email to search for
+     * @return an Optional containing the user if found, or empty if not found
+     */
+    Optional<User> findByEmail(String email);
 }

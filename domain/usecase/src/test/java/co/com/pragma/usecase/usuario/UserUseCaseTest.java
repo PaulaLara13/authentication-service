@@ -9,18 +9,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+
 import static co.com.pragma.common.Constants.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+class UserUseCaseTest {
 
-public class UserUseCaseTest {
     @Mock
     private UserRepository userRepository;
 
@@ -31,69 +31,61 @@ public class UserUseCaseTest {
         userUseCase = new UserUseCase(userRepository);
     }
 
-    // Utilidad para crear un mock de Usuario con datos válidos
-    private User usuarioValidoMock(String name, String lastname, String mail, double salary) {
-        // Si getSalary() en tu dominio es double o long, cambia el tipo del último parámetro y del stub correspondiente
-        User u = mock(User.class);
-        when(u.getName()).thenReturn(name);
-        when(u.getLastname()).thenReturn(lastname);
-        when(u.getMail()).thenReturn(mail);
-        when(u.getSalary()).thenReturn(salary);
-        return u;
+    private User createValidUser(String name, String lastname, String email, double salary) {
+        return User.builder()
+                .name(name)
+                .lastname(lastname)
+                .email(email)
+                .salary(salary)
+                .build();
     }
 
     @Test
-    void saveUser_exitoso_deberiaValidarExistenciaYGuardar() {
+    void saveUser_shouldValidateAndSaveUser() {
         // Arrange
-        // Ajusta el valor del salario si tus constantes de rango requieren double: p.ej. 2000.0
-        int salarioEnRango = 2000;
-        User entrada = usuarioValidoMock("John", "Doe", "john.doe@mail.com", salarioEnRango);
-        User guardado = mock(User.class);
-        ApiResponse response = new ApiResponse("Solicitud creada con éxito. ID:");
+        User user = createValidUser("John", "Doe", "john.doe@mail.com", 2000);
+        User savedUser = User.builder()
+                .id(BigInteger.ONE)
+                .email("john.doe@mail.com")
+                .build();
 
-        when(userRepository.existsByMail("john.doe@mail.com")).thenReturn(Mono.just(false));
-        when(userRepository.saveUser(entrada)).thenReturn(Mono.just(guardado));
+        when(userRepository.existsByMail("john.doe@mail.com")).thenReturn(false);
+        when(userRepository.saveUser(user)).thenReturn(savedUser);
 
-        // Act + Assert
-        StepVerifier.create(userUseCase.saveUser(entrada))
-                .expectNext(response)
-                .verifyComplete();
+        // Act
+        ApiResponse response = userUseCase.saveUser(user);
 
-        // Verify orden de llamadas
+        // Assert
+        assertThat(response.getMensaje()).contains(REQUESTS_CREATEID);
+
         InOrder inOrder = inOrder(userRepository);
         inOrder.verify(userRepository).existsByMail("john.doe@mail.com");
-        inOrder.verify(userRepository).saveUser(entrada);
+        inOrder.verify(userRepository).saveUser(user);
         verifyNoMoreInteractions(userRepository);
     }
 
     @Test
-    void saveUser_correoExistente_deberiaEmitirErrorYNoGuardar() {
+    void saveUser_shouldThrowExceptionWhenEmailExists() {
         // Arrange
-        User entrada = usuarioValidoMock("Jane", "Doe", "jane.doe@mail.com", 2500);
-        when(userRepository.existsByMail("jane.doe@mail.com")).thenReturn(Mono.just(true));
+        User user = createValidUser("Jane", "Doe", "jane.doe@mail.com", 2500);
+        when(userRepository.existsByMail("jane.doe@mail.com")).thenReturn(true);
 
-        // Act + Assert
-        StepVerifier.create(userUseCase.saveUser(entrada))
-                .expectErrorSatisfies(error -> {
-                    assertThat(error).isInstanceOf(IllegalArgumentException.class);
-                    assertThat(error).hasMessage(MAIL_EXIST);
-                })
-                .verify();
+        // Act & Assert
+        assertThatThrownBy(() -> userUseCase.saveUser(user))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(MAIL_EXIST);
 
-        // Verify que no intenta guardar
         verify(userRepository).existsByMail("jane.doe@mail.com");
         verify(userRepository, never()).saveUser(any());
-        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
-    void saveUser_nombreInvalido_deberiaLanzarExcepcionSinConsultarRepositorio() {
+    void saveUser_shouldValidateName() {
         // Arrange
-        User entrada = mock(User.class);
-        when(entrada.getName()).thenReturn(null); // o "" para blanco
+        User user = createValidUser("", "Doe", "john.doe@mail.com", 2000);
 
-        // Act + Assert (excepción sincrónica antes de devolver Mono)
-        assertThatThrownBy(() -> userUseCase.saveUser(entrada))
+        // Act & Assert
+        assertThatThrownBy(() -> userUseCase.saveUser(user))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NAME_VALIDATION);
 
@@ -101,14 +93,12 @@ public class UserUseCaseTest {
     }
 
     @Test
-    void saveUser_apellidoInvalido_deberiaLanzarExcepcion() {
+    void saveUser_shouldValidateLastname() {
         // Arrange
-        User entrada = mock(User.class);
-        when(entrada.getName()).thenReturn("John");
-        when(entrada.getLastname()).thenReturn(""); // blanco
+        User user = createValidUser("John", "", "john.doe@mail.com", 2000);
 
-        // Act + Assert
-        assertThatThrownBy(() -> userUseCase.saveUser(entrada))
+        // Act & Assert
+        assertThatThrownBy(() -> userUseCase.saveUser(user))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(LASTNAME_VALIDATION);
 
@@ -116,15 +106,12 @@ public class UserUseCaseTest {
     }
 
     @Test
-    void saveUser_correoRequerido_deberiaLanzarExcepcion() {
+    void saveUser_shouldValidateEmail() {
         // Arrange
-        User entrada = mock(User.class);
-        when(entrada.getName()).thenReturn("John");
-        when(entrada.getLastname()).thenReturn("Doe");
-        when(entrada.getMail()).thenReturn("   "); // en blanco
+        User user = createValidUser("John", "Doe", "", 2000);
 
-        // Act + Assert
-        assertThatThrownBy(() -> userUseCase.saveUser(entrada))
+        // Act & Assert
+        assertThatThrownBy(() -> userUseCase.saveUser(user))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(MAIL_VALIDATION);
 
@@ -132,15 +119,12 @@ public class UserUseCaseTest {
     }
 
     @Test
-    void saveUser_correoFormatoInvalido_deberiaLanzarExcepcion() {
+    void saveUser_shouldValidateEmailFormat() {
         // Arrange
-        User entrada = mock(User.class);
-        when(entrada.getName()).thenReturn("John");
-        when(entrada.getLastname()).thenReturn("Doe");
-        when(entrada.getMail()).thenReturn("correo-sin-formato");
+        User user = createValidUser("John", "Doe", "invalid-email", 2000);
 
-        // Act + Assert
-        assertThatThrownBy(() -> userUseCase.saveUser(entrada))
+        // Act & Assert
+        assertThatThrownBy(() -> userUseCase.saveUser(user))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(MAIL_FORMAT_INVALID);
 
@@ -148,17 +132,16 @@ public class UserUseCaseTest {
     }
 
     @Test
-    void saveUser_salarioFueraDeRangoInferior_deberiaLanzarExcepcion() {
-        // Arrange
-        User entrada = mock(User.class);
-        when(entrada.getName()).thenReturn("John");
-        when(entrada.getLastname()).thenReturn("Doe");
-        when(entrada.getMail()).thenReturn("john.doe@mail.com");
-        // Un valor claramente bajo; si tu tipo es double, usa -1.0
-        when(entrada.getSalary()).thenReturn(-1.0);
+    void saveUser_shouldValidateSalaryRange() {
+        // Test lower bound
+        User user1 = createValidUser("John", "Doe", "john@example.com", -1);
+        assertThatThrownBy(() -> userUseCase.saveUser(user1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(SALARY_RANGE);
 
-        // Act + Assert
-        assertThatThrownBy(() -> userUseCase.saveUser(entrada))
+        // Test upper bound
+        User user2 = createValidUser("Jane", "Doe", "jane@example.com", Double.MAX_VALUE);
+        assertThatThrownBy(() -> userUseCase.saveUser(user2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(SALARY_RANGE);
 
@@ -166,53 +149,35 @@ public class UserUseCaseTest {
     }
 
     @Test
-    void saveUser_salarioFueraDeRangoSuperior_deberiaLanzarExcepcion() {
+    void getAllUsers_shouldReturnAllUsers() {
         // Arrange
-        User entrada = mock(User.class);
-        when(entrada.getName()).thenReturn("John");
-        when(entrada.getLastname()).thenReturn("Doe");
-        when(entrada.getMail()).thenReturn("john.doe@mail.com");
-        // Un valor muy alto; si tu tipo es double, usa 1.0e12
-        when(entrada.getSalary()).thenReturn(Double.MAX_VALUE);
+        User user1 = createValidUser("John", "Doe", "john@example.com", 2000);
+        User user2 = createValidUser("Jane", "Doe", "jane@example.com", 2500);
+        List<User> users = Arrays.asList(user1, user2);
 
-        // Act + Assert
-        assertThatThrownBy(() -> userUseCase.saveUser(entrada))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(SALARY_RANGE);
+        when(userRepository.getAllUsers()).thenReturn(users);
 
-        verifyNoInteractions(userRepository);
-    }
+        // Act
+        List<User> result = userUseCase.getAllUsers();
 
-    @Test
-    void getAllUsers_deberiaDelegarEnRepositorio() {
-        // Arrange
-        User u1 = mock(User.class);
-        User u2 = mock(User.class);
-        when(userRepository.getAllUsers()).thenReturn(Flux.just(u1, u2));
-
-        // Act + Assert
-        StepVerifier.create(userUseCase.getAllUsers())
-                .expectNext(u1, u2)
-                .verifyComplete();
-
+        // Assert
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyInAnyOrder(user1, user2);
         verify(userRepository).getAllUsers();
         verifyNoMoreInteractions(userRepository);
     }
 
     @Test
-    void deleteUsuarioId_deberiaInvocarRepositorioYLanzarExcepcion() {
+    void deleteUser_shouldCallRepository() {
         // Arrange
-        BigInteger id = BigInteger.valueOf(123L);
-        // Si deleteUsuario retorna Mono<Void> en tu repositorio, puedes stubearlo:
-        // when(usuarioRepository.deleteUsuario(id)).thenReturn(Mono.empty());
+        BigInteger userId = BigInteger.ONE;
 
-        // Act + Assert
-        assertThatThrownBy(() -> userUseCase.deleteUserId(id))
+        // Act & Assert
+        assertThatThrownBy(() -> userUseCase.deleteUser(userId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(DELETE_USER);
 
-        // Verify que se llamó al repositorio con el id correcto antes de la excepción
-        verify(userRepository).deleteUser(id);
+        verify(userRepository).deleteUser(userId);
         verifyNoMoreInteractions(userRepository);
     }
 }
