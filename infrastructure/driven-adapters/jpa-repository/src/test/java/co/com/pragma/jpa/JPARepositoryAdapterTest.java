@@ -1,4 +1,5 @@
 package co.com.pragma.jpa;
+
 import co.com.pragma.jpa.entity.UserEntity;
 import co.com.pragma.jpa.exception.UserNotFoundException;
 import co.com.pragma.model.user.User;
@@ -9,24 +10,24 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivecommons.utils.ObjectMapper;
-import reactor.test.StepVerifier;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-@ExtendWith(MockitoExtension.class)
 
-public class JPARepositoryAdapterTest {
+@ExtendWith(MockitoExtension.class)
+class JPARepositoryAdapterTest {
+    
     @Mock
     private JPARepository repository;
 
     @Mock
     private ObjectMapper mapper;
 
-    private JPARepositoryAdapter adapter; // spy en @BeforeEach
+    private JPARepositoryAdapter adapter;
 
     @BeforeEach
     void setUp() {
@@ -34,117 +35,150 @@ public class JPARepositoryAdapterTest {
     }
 
     @Test
-    void guardar_deberiaMapearGuardarYRetornarDominio() {
+    void saveUser_shouldMapSaveAndReturnDomain() {
         // Arrange
-        User usuarioEntrada = mock(User.class);
-        UserEntity entidadParaGuardar = mock(UserEntity.class);
-        UserEntity entidadGuardada = mock(UserEntity.class);
-        User usuarioMapeado = mock(User.class);
+        User inputUser = mock(User.class);
+        UserEntity entityToSave = mock(UserEntity.class);
+        UserEntity savedEntity = mock(UserEntity.class);
+        User mappedUser = mock(User.class);
 
-        doReturn(entidadParaGuardar).when(adapter).toData(usuarioEntrada);
-        when(repository.save(entidadParaGuardar)).thenReturn(entidadGuardada);
-        doReturn(usuarioMapeado).when(adapter).toEntity(entidadGuardada);
+        doReturn(entityToSave).when(adapter).toData(inputUser);
+        when(repository.save(entityToSave)).thenReturn(savedEntity);
+        doReturn(mappedUser).when(adapter).toEntity(savedEntity);
 
-        // Act + Assert
-        StepVerifier.create(adapter.saveUser(usuarioEntrada))
-                .expectNext(usuarioMapeado)
-                .verifyComplete();
+        // Act
+        User result = adapter.saveUser(inputUser);
 
-        // Verify orden y llamadas
+        // Assert
+        assertThat(result).isSameAs(mappedUser);
+
         InOrder inOrder = inOrder(adapter, repository);
-        inOrder.verify(adapter).toData(usuarioEntrada);
-        inOrder.verify(repository).save(entidadParaGuardar);
-        inOrder.verify(adapter).toEntity(entidadGuardada);
+        inOrder.verify(adapter).toData(inputUser);
+        inOrder.verify(repository).save(entityToSave);
+        inOrder.verify(adapter).toEntity(savedEntity);
 
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void existePorCorreo_true_deberiaRetornarTrue() {
+    void existsByMail_whenEmailExists_shouldReturnTrue() {
         // Arrange
-        String correo = "mail@dominio.com";
-        when(repository.existsByMail(correo)).thenReturn(true);
+        String email = "test@example.com";
+        when(repository.existsByMail(email)).thenReturn(true);
 
-        // Act + Assert
-        StepVerifier.create(adapter.existsByMail(correo))
-                .expectNext(true)
-                .verifyComplete();
+        // Act
+        boolean result = adapter.existsByMail(email);
 
-        verify(repository).existsByMail(correo);
+        // Assert
+        assertThat(result).isTrue();
+        verify(repository).existsByMail(email);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void existePorCorreo_false_deberiaRetornarFalse() {
+    void existsByMail_whenEmailDoesNotExist_shouldReturnFalse() {
         // Arrange
-        String correo = "otro@dominio.com";
-        when(repository.existsByMail(correo)).thenReturn(false);
+        String email = "nonexistent@example.com";
+        when(repository.existsByMail(email)).thenReturn(false);
 
-        // Act + Assert
-        StepVerifier.create(adapter.existsByMail(correo))
-                .expectNext(false)
-                .verifyComplete();
+        // Act
+        boolean result = adapter.existsByMail(email);
 
-        verify(repository).existsByMail(correo);
+        // Assert
+        assertThat(result).isFalse();
+        verify(repository).existsByMail(email);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void getAllUsers_deberiaRetornarUsuariosMapeados() {
+    void getAllUsers_shouldReturnMappedUsers() {
         // Arrange
-        UserEntity e1 = mock(UserEntity.class);
-        UserEntity e2 = mock(UserEntity.class);
-        List<UserEntity> entidades = List.of(e1, e2);
+        UserEntity entity1 = mock(UserEntity.class);
+        UserEntity entity2 = mock(UserEntity.class);
+        List<UserEntity> entities = List.of(entity1, entity2);
 
-        User u1 = mock(User.class);
-        User u2 = mock(User.class);
-        List<User> usuarios = List.of(u1, u2);
+        User user1 = mock(User.class);
+        User user2 = mock(User.class);
+        List<User> users = List.of(user1, user2);
 
-        when(repository.findAll()).thenReturn(entidades);
-        // Stub del método protegido toList
-        doReturn(usuarios).when(adapter).toList(any(Iterable.class));
+        when(repository.findAll()).thenReturn(entities);
+        doReturn(users).when(adapter).toList(any(Iterable.class));
 
-        // Act + Assert
-        StepVerifier.create(adapter.getAllUsers())
-                .expectNext(u1, u2)
-                .verifyComplete();
+        // Act
+        List<User> result = adapter.getAllUsers();
 
+        // Assert
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyInAnyOrder(user1, user2);
+        
         verify(repository).findAll();
-        verify(adapter).toList(entidades);
+        verify(adapter).toList(entities);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void deleteUsuario_existente_deberiaEliminarYCompletar() {
+    void deleteUser_whenUserExists_shouldDeleteUser() {
         // Arrange
-        BigInteger id = BigInteger.valueOf(1);
-        UserEntity usuarioEntity = mock(UserEntity.class);
-        when(repository.findById(id)).thenReturn(Optional.of(usuarioEntity));
-        when(usuarioEntity.getId()).thenReturn(id);
+        BigInteger userId = BigInteger.ONE;
+        when(repository.existsById(userId)).thenReturn(true);
 
-        // Act + Assert
-        StepVerifier.create(adapter.deleteUser(id))
-                .verifyComplete();
+        // Act
+        adapter.deleteUser(userId);
 
-        verify(repository).findById(id);
-        verify(repository).deleteById(id);
+        // Assert
+        verify(repository).existsById(userId);
+        verify(repository).deleteById(userId);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void deleteUsuario_noExistente_deberiaEmitirUserNotFoundException() {
+    void deleteUser_whenUserDoesNotExist_shouldThrowException() {
         // Arrange
-        BigInteger id = BigInteger.valueOf(99);
-        when(repository.findById(id)).thenReturn(Optional.empty());
+        BigInteger userId = BigInteger.valueOf(99);
+        when(repository.existsById(userId)).thenReturn(false);
 
-        // Act + Assert
-        StepVerifier.create(adapter.deleteUser(id))
-                .expectErrorSatisfies(throwable ->
-                        assertThat(throwable).isInstanceOf(UserNotFoundException.class))
-                .verify();
+        // Act & Assert
+        assertThatThrownBy(() -> adapter.deleteUser(userId))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User not found with id: 99");
 
-        verify(repository).findById(id);
+        verify(repository).existsById(userId);
         verify(repository, never()).deleteById(any());
         verifyNoMoreInteractions(repository);
+    }
+    
+    @Test
+    void findByEmail_whenUserExists_shouldReturnUser() {
+        // Arrange
+        String email = "user@example.com";
+        UserEntity userEntity = mock(UserEntity.class);
+        User expectedUser = mock(User.class);
+        
+        when(repository.findByMail(email)).thenReturn(userEntity);
+        when(adapter.toEntity(userEntity)).thenReturn(expectedUser);
+        
+        // Act
+        Optional<User> result = adapter.findByEmail(email);
+        
+        // Assert
+        assertThat(result).isPresent().contains(expectedUser);
+        verify(repository).findByMail(email);
+        verify(adapter).toEntity(userEntity);
+        verifyNoMoreInteractions(repository);
+    }
+    
+    @Test
+    void findByEmail_whenUserDoesNotExist_shouldReturnEmpty() {
+        // Arrange
+        String email = "nonexistent@example.com";
+        when(repository.findByMail(email)).thenReturn(null);
+        
+        // Act
+        Optional<User> result = adapter.findByEmail(email);
+        
+        // Assert
+        assertThat(result).isEmpty();
+        verify(repository).findByMail(email);
+        verifyNoMoreInteractions(repository, mapper);
     }
 }

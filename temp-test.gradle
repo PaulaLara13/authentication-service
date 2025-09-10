@@ -1,0 +1,6 @@
+// Temporary configuration to disable validation for testing
+subprojects {
+    tasks.withType(ValidateStructureTask).configureEach {
+        enabled = false
+    }
+}

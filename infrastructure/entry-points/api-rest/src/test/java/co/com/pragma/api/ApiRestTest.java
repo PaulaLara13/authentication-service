@@ -13,10 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import java.math.BigInteger;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -33,72 +32,65 @@ class ApiRestTest {
     private ApiRest apiRest;
 
     @Test
-    void crearUsuario_deberiaRetornar201ConCuerpo() {
+    void createUser_shouldReturn201WithBody() {
         // Arrange
         CreateUserDto createUserDto = mock(CreateUserDto.class);
         User user = mock(User.class);
-        User usuarioGuardado = mock(User.class);
-        UserDto userDtoEsperado = mock(UserDto.class);
-        ApiResponse apiResponse = new ApiResponse("Solicitud creada con éxito. ID:");
+        ApiResponse apiResponse = new ApiResponse("User created successfully");
 
         when(userMapper.toModel(createUserDto)).thenReturn(user);
-        when(userUseCase.saveUser(user)).thenReturn(Mono.just(apiResponse));
-        when(userMapper.toResponse(usuarioGuardado)).thenReturn(userDtoEsperado);
+        when(userUseCase.saveUser(user)).thenReturn(apiResponse);
 
-        // Act + Assert
-        StepVerifier.create(apiRest.createUser(createUserDto))
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-                    assertThat(response.getBody()).isSameAs(userDtoEsperado);
-                })
-                .verifyComplete();
+        // Act
+        var response = apiRest.createUser(createUserDto);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isSameAs(apiResponse);
 
         // Verify
         verify(userMapper).toModel(createUserDto);
         verify(userUseCase).saveUser(user);
-        verify(userMapper).toResponse(usuarioGuardado);
         verifyNoMoreInteractions(userUseCase, userMapper);
     }
 
     @Test
-    void obtenerTodos_deberiaRetornar200ConLista() {
+    void getAllUsers_shouldReturn200WithUserList() {
         // Arrange
-        User usuario1 = mock(User.class);
-        User usuario2 = mock(User.class);
+        User user1 = mock(User.class);
+        User user2 = mock(User.class);
         UserDto dto1 = mock(UserDto.class);
         UserDto dto2 = mock(UserDto.class);
 
-        when(userUseCase.getAllUsers()).thenReturn(Flux.just(usuario1, usuario2));
-        when(userMapper.toResponse(usuario1)).thenReturn(dto1);
-        when(userMapper.toResponse(usuario2)).thenReturn(dto2);
+        when(userUseCase.getAllUsers()).thenReturn(List.of(user1, user2));
+        when(userMapper.toResponse(user1)).thenReturn(dto1);
+        when(userMapper.toResponse(user2)).thenReturn(dto2);
 
-        // Act + Assert
-        StepVerifier.create(apiRest.getAllUser())
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).containsExactly(dto1, dto2);
-                })
-                .verifyComplete();
+        // Act
+        var response = apiRest.getAllUsers();
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).containsExactly(dto1, dto2);
 
         // Verify
         verify(userUseCase).getAllUsers();
-        verify(userMapper).toResponse(usuario1);
-        verify(userMapper).toResponse(usuario2);
+        verify(userMapper).toResponse(user1);
+        verify(userMapper).toResponse(user2);
         verifyNoMoreInteractions(userUseCase, userMapper);
     }
 
     @Test
-    void obtenerTodos_deberiaRetornar200ConListaVacia() {
+    void getAllUsers_whenNoUsers_shouldReturnEmptyList() {
         // Arrange
-        when(userUseCase.getAllUsers()).thenReturn(Flux.empty());
+        when(userUseCase.getAllUsers()).thenReturn(List.of());
 
-        // Act + Assert
-        StepVerifier.create(apiRest.getAllUser())
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isEmpty();
-                })
-                .verifyComplete();
+        // Act
+        var response = apiRest.getAllUsers();
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEmpty();
 
         // Verify
         verify(userUseCase).getAllUsers();
@@ -107,22 +99,21 @@ class ApiRestTest {
     }
 
     @Test
-    void eliminarUsuario_deberiaInvocarCasoDeUsoYRetornar200() {
+    void deleteUser_shouldCallUseCaseAndReturn200() {
         // Arrange
         BigInteger id = BigInteger.valueOf(123L);
-        when(userUseCase.deleteUserId(id)).thenReturn(Mono.empty());
+        doNothing().when(userUseCase).deleteUser(id);
 
-        // Act + Assert
-        StepVerifier.create(apiRest.deleteUser(id))
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isNull();
-                })
-                .verifyComplete();
+        // Act
+        var response = apiRest.deleteUser(id);
 
-        // Verify que se llamó con el id correcto
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNull();
+
+        // Verify correct ID was used
         ArgumentCaptor<BigInteger> idCaptor = ArgumentCaptor.forClass(BigInteger.class);
-        verify(userUseCase).deleteUserId(idCaptor.capture());
+        verify(userUseCase).deleteUser(idCaptor.capture());
         assertThat(idCaptor.getValue()).isEqualTo(id);
 
         verifyNoMoreInteractions(userUseCase);

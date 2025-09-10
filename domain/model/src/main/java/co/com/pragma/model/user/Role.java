@@ -1,15 +1,23 @@
 package co.com.pragma.model.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigInteger;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
-
 public class Role {
     private BigInteger id;
-    private String name;
+    private RoleName name;
+    
+    public static Role from(RoleName roleName) {
+        return Role.builder()
+                .name(roleName)
+                .build();
+    }
 }

@@ -13,5 +13,5 @@ public record CreateUserDto(
         String mail,
         double salary,
         String password,
-        BigInteger roleId){
+        String role){
 }

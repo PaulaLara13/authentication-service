@@ -9,10 +9,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import reactor.core.publisher.Mono;
 import static co.com.pragma.common.Constants.*;
+import co.com.pragma.model.user.exception.InvalidCredentialsException;
 
 @RestControllerAdvice
 public class UserExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(UserExceptionHandler.class);
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Mono<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        log.warn("Authentication error: {}", ex.getMessage());
+        return Mono.just(new ErrorResponse("Credenciales inválidas"));
+    }
 
     @ExceptionHandler({IllegalArgumentException.class, DecodingException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)

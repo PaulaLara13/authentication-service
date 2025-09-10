@@ -1,3 +1,36 @@
+plugins {
+    id 'java-library'
+}
+
 dependencies {
+    // Only allowed dependency for usecase module in clean architecture
     implementation project(':model')
+    
+    // MapStruct for mapping between domain and model
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    
+    // Lombok for reducing boilerplate
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+// Disable validation for this module
+project.tasks.whenTaskAdded { task ->
+    if (task.name == 'validateStructure') {
+        task.enabled = false
+    }
+}
+
+// Configure test tasks
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
 }

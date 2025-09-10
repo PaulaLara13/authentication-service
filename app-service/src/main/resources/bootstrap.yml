@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: authentication-service
+  cloud:
+    config:
+      enabled: false
+  config:
+    import: optional:config/application.yml
+
+# JWT Configuration
+app:
+  jwt:
+    secret: d8e8fca2dc0f896fd778b9b0c1cba0e5f8a7c6d8b4e3c2a1f9e8d7c6b5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0
+    expiration-ms: 86400000  # 24 hours
+    refresh-expiration-ms: 2592000000  # 30 days

@@ -1,0 +1,401 @@
+Initialized native services in: /Users/jhlara/.gradle/native
+Initialized jansi services in: /Users/jhlara/.gradle/native
+Received JVM installation metadata from '/opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home': {JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home, JAVA_VERSION=17.0.16, JAVA_VENDOR=Homebrew, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=17.0.16+0, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=17.0.16+0, VM_VENDOR=Homebrew, OS_ARCH=aarch64}
+Found daemon DaemonInfo{pid=24222, address=[3d8e7017-2952-45a4-a73e-e747efbfa150 port:51115, addresses:[/127.0.0.1]], state=Idle, lastBusy=1757465775198, context=DefaultDaemonContext[uid=47094f79-dac9-40d4-8da7-412c4c78efb0,javaHome=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=24222,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]} however its context does not match the desired criteria.
+Java home is different.
+Wanted: DefaultDaemonContext[uid=null,javaHome=/opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=47055,idleTimeout=null,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]
+Actual: DefaultDaemonContext[uid=47094f79-dac9-40d4-8da7-412c4c78efb0,javaHome=/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=24222,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]
+
+  Looking for a different daemon...
+Found daemon DaemonInfo{pid=24280, address=[48022dec-a70a-422a-9679-415e2198986b port:51148, addresses:[/127.0.0.1]], state=Idle, lastBusy=1757463254295, context=DefaultDaemonContext[uid=c62e4590-fe90-4f86-834d-5cdd0d688e7c,javaHome=/Users/jhlara/Library/Java/JavaVirtualMachines/openjdk-24.0.1/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=24280,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]} however its context does not match the desired criteria.
+Java home is different.
+Wanted: DefaultDaemonContext[uid=null,javaHome=/opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=47055,idleTimeout=null,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]
+Actual: DefaultDaemonContext[uid=c62e4590-fe90-4f86-834d-5cdd0d688e7c,javaHome=/Users/jhlara/Library/Java/JavaVirtualMachines/openjdk-24.0.1/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=24280,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]
+
+  Looking for a different daemon...
+Found daemon DaemonInfo{pid=29673, address=[78654f50-c470-4bf0-8d94-dc917cf33208 port:59537, addresses:[/127.0.0.1]], state=Idle, lastBusy=1757464437386, context=DefaultDaemonContext[uid=1a36dcb1-95fb-41fb-b7bc-c89e741179c5,javaHome=/Users/jhlara/Library/Java/JavaVirtualMachines/openjdk-24.0.1/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=29673,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=utf8,-Duser.country=CO,-Duser.language=es,-Duser.variant]} however its context does not match the desired criteria.
+Java home is different.
+Wanted: DefaultDaemonContext[uid=null,javaHome=/opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=47055,idleTimeout=null,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=CO,-Duser.language=es,-Duser.variant]
+Actual: DefaultDaemonContext[uid=1a36dcb1-95fb-41fb-b7bc-c89e741179c5,javaHome=/Users/jhlara/Library/Java/JavaVirtualMachines/openjdk-24.0.1/Contents/Home,daemonRegistryDir=/Users/jhlara/.gradle/daemon,pid=29673,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,daemonOpts=--add-opens=java.base/java.util=ALL-UNNAMED,--add-opens=java.base/java.lang=ALL-UNNAMED,--add-opens=java.base/java.lang.invoke=ALL-UNNAMED,--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED,--add-opens=java.base/java.nio.charset=ALL-UNNAMED,--add-opens=java.base/java.net=ALL-UNNAMED,--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED,-XX:MaxMetaspaceSize=384m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=utf8,-Duser.country=CO,-Duser.language=es,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 27831). The daemon log file: /Users/jhlara/.gradle/daemon/8.5/daemon-27831.out.log
+Starting 54th build in daemon [uptime: 50 mins 15.779 secs, performance: 100%, GC rate: 0.00/s, heap usage: 0% of 512 MiB, non-heap usage: 42% of 384 MiB]
+Using 10 worker leases.
+Calculating task graph as no cached configuration is available for tasks: :usecase:test --tests co.com.pragma.usecase.auth.AuthUseCaseTest.authenticateUser_Success
+Now considering [/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/settings.gradle'.
+Using local directory build cache for the root build (location = /Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/build-cache, removeUnusedEntriesAfter = 7 days).
+Projects loaded. Root project using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/build.gradle'.
+Included projects: [root project 'authentication-service', project ':api-rest', project ':app-service', project ':jpa-repository', project ':model', project ':usecase']
+
+> Configure project :
+Evaluating root project 'authentication-service' using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/build.gradle'.
+Applying dependency management to configuration 'annotationProcessor' in project 'authentication-service'
+Applying dependency management to configuration 'apiElements' in project 'authentication-service'
+Applying dependency management to configuration 'archives' in project 'authentication-service'
+Applying dependency management to configuration 'compileClasspath' in project 'authentication-service'
+Applying dependency management to configuration 'compileOnly' in project 'authentication-service'
+Applying dependency management to configuration 'coverageDataElementsForTest' in project 'authentication-service'
+Applying dependency management to configuration 'default' in project 'authentication-service'
+Applying dependency management to configuration 'implementation' in project 'authentication-service'
+Applying dependency management to configuration 'jacocoAgent' in project 'authentication-service'
+Applying dependency management to configuration 'jacocoAnt' in project 'authentication-service'
+Applying dependency management to configuration 'mainSourceElements' in project 'authentication-service'
+Applying dependency management to configuration 'runtimeClasspath' in project 'authentication-service'
+Applying dependency management to configuration 'runtimeElements' in project 'authentication-service'
+Applying dependency management to configuration 'runtimeOnly' in project 'authentication-service'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'authentication-service'
+Applying dependency management to configuration 'testCompileClasspath' in project 'authentication-service'
+Applying dependency management to configuration 'testCompileOnly' in project 'authentication-service'
+Applying dependency management to configuration 'testImplementation' in project 'authentication-service'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'authentication-service'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'authentication-service'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'authentication-service'
+Reflections took 1 ms to scan 1 urls, producing 3 keys and 16 values
+Injecting test logger
+Injecting test logger
+Injecting test logger
+Injecting test logger
+Injecting test logger
+Applying dependency management to configuration 'archives' in project 'api-rest'
+Applying dependency management to configuration 'default' in project 'api-rest'
+Applying dependency management to configuration 'implementation' in project 'api-rest'
+Applying dependency management to configuration 'compileOnly' in project 'api-rest'
+Applying dependency management to configuration 'compileClasspath' in project 'api-rest'
+Applying dependency management to configuration 'annotationProcessor' in project 'api-rest'
+Applying dependency management to configuration 'runtimeOnly' in project 'api-rest'
+Applying dependency management to configuration 'runtimeClasspath' in project 'api-rest'
+Applying dependency management to configuration 'apiElements' in project 'api-rest'
+Applying dependency management to configuration 'runtimeElements' in project 'api-rest'
+Applying dependency management to configuration 'mainSourceElements' in project 'api-rest'
+Applying dependency management to configuration 'testImplementation' in project 'api-rest'
+Applying dependency management to configuration 'testCompileOnly' in project 'api-rest'
+Applying dependency management to configuration 'testCompileClasspath' in project 'api-rest'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'api-rest'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'api-rest'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'api-rest'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'api-rest'
+Applying dependency management to configuration 'jacocoAgent' in project 'api-rest'
+Applying dependency management to configuration 'jacocoAnt' in project 'api-rest'
+Applying dependency management to configuration 'coverageDataElementsForTest' in project 'api-rest'
+Applying dependency management to configuration 'archives' in project 'app-service'
+Applying dependency management to configuration 'default' in project 'app-service'
+Applying dependency management to configuration 'implementation' in project 'app-service'
+Applying dependency management to configuration 'compileOnly' in project 'app-service'
+Applying dependency management to configuration 'compileClasspath' in project 'app-service'
+Applying dependency management to configuration 'annotationProcessor' in project 'app-service'
+Applying dependency management to configuration 'runtimeOnly' in project 'app-service'
+Applying dependency management to configuration 'runtimeClasspath' in project 'app-service'
+Applying dependency management to configuration 'apiElements' in project 'app-service'
+Applying dependency management to configuration 'runtimeElements' in project 'app-service'
+Applying dependency management to configuration 'mainSourceElements' in project 'app-service'
+Applying dependency management to configuration 'testImplementation' in project 'app-service'
+Applying dependency management to configuration 'testCompileOnly' in project 'app-service'
+Applying dependency management to configuration 'testCompileClasspath' in project 'app-service'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'app-service'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'app-service'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'app-service'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'app-service'
+Applying dependency management to configuration 'jacocoAgent' in project 'app-service'
+Applying dependency management to configuration 'jacocoAnt' in project 'app-service'
+Applying dependency management to configuration 'coverageDataElementsForTest' in project 'app-service'
+Applying dependency management to configuration 'archives' in project 'jpa-repository'
+Applying dependency management to configuration 'default' in project 'jpa-repository'
+Applying dependency management to configuration 'implementation' in project 'jpa-repository'
+Applying dependency management to configuration 'compileOnly' in project 'jpa-repository'
+Applying dependency management to configuration 'compileClasspath' in project 'jpa-repository'
+Applying dependency management to configuration 'annotationProcessor' in project 'jpa-repository'
+Applying dependency management to configuration 'runtimeOnly' in project 'jpa-repository'
+Applying dependency management to configuration 'runtimeClasspath' in project 'jpa-repository'
+Applying dependency management to configuration 'apiElements' in project 'jpa-repository'
+Applying dependency management to configuration 'runtimeElements' in project 'jpa-repository'
+Applying dependency management to configuration 'mainSourceElements' in project 'jpa-repository'
+Applying dependency management to configuration 'testImplementation' in project 'jpa-repository'
+Applying dependency management to configuration 'testCompileOnly' in project 'jpa-repository'
+Applying dependency management to configuration 'testCompileClasspath' in project 'jpa-repository'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'jpa-repository'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'jpa-repository'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'jpa-repository'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'jpa-repository'
+Applying dependency management to configuration 'jacocoAgent' in project 'jpa-repository'
+Applying dependency management to configuration 'jacocoAnt' in project 'jpa-repository'
+Applying dependency management to configuration 'coverageDataElementsForTest' in project 'jpa-repository'
+Applying dependency management to configuration 'archives' in project 'model'
+Applying dependency management to configuration 'default' in project 'model'
+Applying dependency management to configuration 'implementation' in project 'model'
+Applying dependency management to configuration 'compileOnly' in project 'model'
+Applying dependency management to configuration 'compileClasspath' in project 'model'
+Applying dependency management to configuration 'annotationProcessor' in project 'model'
+Applying dependency management to configuration 'runtimeOnly' in project 'model'
+Applying dependency management to configuration 'runtimeClasspath' in project 'model'
+Applying dependency management to configuration 'apiElements' in project 'model'
+Applying dependency management to configuration 'runtimeElements' in project 'model'
+Applying dependency management to configuration 'mainSourceElements' in project 'model'
+Applying dependency management to configuration 'testImplementation' in project 'model'
+Applying dependency management to configuration 'testCompileOnly' in project 'model'
+Applying dependency management to configuration 'testCompileClasspath' in project 'model'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'model'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'model'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'model'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'model'
+Applying dependency management to configuration 'jacocoAgent' in project 'model'
+Applying dependency management to configuration 'jacocoAnt' in project 'model'
+Applying dependency management to configuration 'coverageDataElementsForTest' in project 'model'
+Applying dependency management to configuration 'archives' in project 'usecase'
+Applying dependency management to configuration 'default' in project 'usecase'
+Applying dependency management to configuration 'implementation' in project 'usecase'
+Applying dependency management to configuration 'compileOnly' in project 'usecase'
+Applying dependency management to configuration 'compileClasspath' in project 'usecase'
+Applying dependency management to configuration 'annotationProcessor' in project 'usecase'
+Applying dependency management to configuration 'runtimeOnly' in project 'usecase'
+Applying dependency management to configuration 'runtimeClasspath' in project 'usecase'
+Applying dependency management to configuration 'apiElements' in project 'usecase'
+Applying dependency management to configuration 'runtimeElements' in project 'usecase'
+Applying dependency management to configuration 'mainSourceElements' in project 'usecase'
+Applying dependency management to configuration 'testImplementation' in project 'usecase'
+Applying dependency management to configuration 'testCompileOnly' in project 'usecase'
+Applying dependency management to configuration 'testCompileClasspath' in project 'usecase'
+Applying dependency management to configuration 'testAnnotationProcessor' in project 'usecase'
+Applying dependency management to configuration 'testRuntimeOnly' in project 'usecase'
+Applying dependency management to configuration 'testRuntimeClasspath' in project 'usecase'
+Applying dependency management to configuration 'testResultsElementsForTest' in project 'usecase'
+Applying dependency management to configuration 'jacocoAgent' in project 'usecase'
+Applying dependency management to configuration 'jacocoAnt' in project 'usecase'
+Applying dependency management to configuration 'coverageDataElementsForTest' in project 'usecase'
+
+> Configure project :api-rest
+Evaluating project ':api-rest' using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/infrastructure/entry-points/api-rest/build.gradle'.
+Applying dependency management to configuration 'api' in project 'api-rest'
+Applying dependency management to configuration 'compileOnlyApi' in project 'api-rest'
+
+> Configure project :app-service
+Evaluating project ':app-service' using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/applications/app-service/build.gradle'.
+Applying dependency management to configuration 'bootArchives' in project 'app-service'
+Applying dependency management to configuration 'productionRuntimeClasspath' in project 'app-service'
+Applying dependency management to configuration 'developmentOnly' in project 'app-service'
+Applying dependency management to configuration 'testAndDevelopmentOnly' in project 'app-service'
+
+> Configure project :jpa-repository
+Evaluating project ':jpa-repository' using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/infrastructure/driven-adapters/jpa-repository/build.gradle'.
+Applying dependency management to configuration 'api' in project 'jpa-repository'
+Applying dependency management to configuration 'compileOnlyApi' in project 'jpa-repository'
+
+> Configure project :model
+Evaluating project ':model' using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/model/build.gradle'.
+Applying dependency management to configuration 'api' in project 'model'
+Applying dependency management to configuration 'compileOnlyApi' in project 'model'
+
+> Configure project :usecase
+Evaluating project ':usecase' using build file '/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase/build.gradle'.
+Applying dependency management to configuration 'api' in project 'usecase'
+Applying dependency management to configuration 'compileOnlyApi' in project 'usecase'
+All projects evaluated.
+Task path ':usecase:test' matched project ':usecase'
+Task name matched 'test'
+Selected primary task 'test' from project :usecase
+Resolving global dependency management for project 'usecase'
+Excluding []
+Resolving global dependency management for project 'model'
+Excluding []
+Excluding []
+Excluding []
+Excluding []
+Excluding []
+Excluding []
+Tasks to be executed: [task ':validateStructure', task ':model:compileJava', task ':model:processResources', task ':model:classes', task ':model:jar', task ':usecase:compileJava', task ':usecase:processResources', task ':usecase:classes', task ':usecase:compileTestJava', task ':usecase:processTestResources', task ':usecase:testClasses', task ':usecase:test', task ':usecase:jacocoTestReport']
+Tasks that were excluded: []
+has spring-web dependency to run validations: true
+Validating Infrastructure Layer
+Validating jpa-repository Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+--- Dependency: model
+--- Dependency: spring-boot-starter-data-jpa
+--- Dependency: object-mapper-api
+Validating api-rest Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+--- Dependency: spring-boot-starter-undertow
+--- Dependency: spring-boot-starter-webflux
+--- Dependency: spring-boot-starter-actuator
+--- Dependency: spring-boot-starter-security
+--- Dependency: spring-boot-starter-validation
+--- Dependency: usecase
+--- Dependency: model
+--- Dependency: spring-security-core
+--- Dependency: jjwt-api
+--- Dependency: micrometer-registry-prometheus
+--- Dependency: gson
+--- Dependency: mapstruct
+Validating Model Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+Validating Use Case Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+--- Dependency: model
+Excluding []
+Excluding []
+Resolve mutations for :validateStructure (Thread[Execution worker,5,main]) started.
+Resolve mutations for :model:processResources (Thread[Execution worker Thread 2,5,main]) started.
+:validateStructure (Thread[Execution worker,5,main]) started.
+Resolve mutations for :usecase:processResources (Thread[Execution worker Thread 3,5,main]) started.
+:model:processResources (Thread[Execution worker Thread 2,5,main]) started.
+:usecase:processResources (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :usecase:processResources NO-SOURCE
+Skipping task ':usecase:processResources' as it has no source files and no previous output files.
+
+> Task :model:processResources NO-SOURCE
+Skipping task ':model:processResources' as it has no source files and no previous output files.
+Resolve mutations for :usecase:processTestResources (Thread[Execution worker Thread 3,5,main]) started.
+:usecase:processTestResources (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :usecase:processTestResources NO-SOURCE
+Skipping task ':usecase:processTestResources' as it has no source files and no previous output files.
+
+> Task :validateStructure
+has spring-web dependency to run validations: true
+Validating Infrastructure Layer
+Validating jpa-repository Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+--- Dependency: model
+--- Dependency: spring-boot-starter-data-jpa
+--- Dependency: object-mapper-api
+Validating api-rest Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+--- Dependency: spring-boot-starter-undertow
+--- Dependency: spring-boot-starter-webflux
+--- Dependency: spring-boot-starter-actuator
+--- Dependency: spring-boot-starter-security
+--- Dependency: spring-boot-starter-validation
+--- Dependency: usecase
+--- Dependency: model
+--- Dependency: spring-security-core
+--- Dependency: jjwt-api
+--- Dependency: micrometer-registry-prometheus
+--- Dependency: gson
+--- Dependency: mapstruct
+Validating Model Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+Validating Use Case Module
+--- Dependency: reactor-core
+--- Dependency: reactor-extra
+--- Dependency: spring-boot-dependencies
+--- Dependency: model
+Caching disabled for task ':validateStructure' because:
+  Caching has not been enabled for the task
+Task ':validateStructure' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+Clean Architecture plugin version: 3.24.0
+Submodules: usecase
+Submodules: model
+Submodules: app-service
+Submodules: jpa-repository
+Submodules: api-rest
+Project Package: co.com.pragma
+Injecting ArchitectureTest in module app-service
+Applying changes on disk
+files: 3, dirs: 3, deleted dirs: 0
+Changes successfully applied
+You have an old version of the plugin the latest version is: 3.26.1 to update it please run: gradle u
+The project is valid
+Finding factory with prefix  and type AfterValidateStructureTask in package co.com.bancolombia.task
+Reflections took 1 ms to scan 1 urls, producing 5 keys and 21 values
+##########################
+##   Analytics Notice   ##
+##########################
+Analytics are enabled by default if you want to disable it please run: gradle analytics --enabled false
+Resolve mutations for :model:compileJava (Thread[Execution worker,5,main]) started.
+:model:compileJava (Thread[Execution worker,5,main]) started.
+
+> Task :model:compileJava UP-TO-DATE
+Build cache key for task ':model:compileJava' is c0905c714aef48d08466622caf14a27b
+Skipping task ':model:compileJava' as it is up-to-date.
+work action resolve main (project :model) (Thread[Execution worker,5,main]) started.
+Resolve mutations for :model:classes (Thread[Execution worker,5,main]) started.
+Resolve mutations for :usecase:compileJava (Thread[Execution worker Thread 3,5,main]) started.
+:model:classes (Thread[Execution worker,5,main]) started.
+:usecase:compileJava (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :model:classes UP-TO-DATE
+Skipping task ':model:classes' as it has no actions.
+Resolve mutations for :model:jar (Thread[Execution worker,5,main]) started.
+:model:jar (Thread[Execution worker,5,main]) started.
+
+> Task :usecase:compileJava UP-TO-DATE
+Build cache key for task ':usecase:compileJava' is 4f09aad2b29c3d9ff0406a1c8787164d
+Skipping task ':usecase:compileJava' as it is up-to-date.
+Resolve mutations for :usecase:classes (Thread[Execution worker Thread 3,5,main]) started.
+:usecase:classes (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :usecase:classes UP-TO-DATE
+Skipping task ':usecase:classes' as it has no actions.
+Resolve mutations for :usecase:compileTestJava (Thread[Execution worker Thread 3,5,main]) started.
+:usecase:compileTestJava (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :usecase:compileTestJava UP-TO-DATE
+Build cache key for task ':usecase:compileTestJava' is b97a071d12a3c00decf391b58471fc8a
+Skipping task ':usecase:compileTestJava' as it is up-to-date.
+Resolve mutations for :usecase:testClasses (Thread[Execution worker Thread 3,5,main]) started.
+:usecase:testClasses (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :usecase:testClasses UP-TO-DATE
+Skipping task ':usecase:testClasses' as it has no actions.
+
+> Task :model:jar UP-TO-DATE
+Caching disabled for task ':model:jar' because:
+  Not worth caching
+Skipping task ':model:jar' as it is up-to-date.
+work action resolve model.jar (project :model) (Thread[Execution worker,5,main]) started.
+Resolve mutations for :usecase:test (Thread[Execution worker,5,main]) started.
+:usecase:test (Thread[Execution worker,5,main]) started.
+Gradle Test Executor 42 started executing tests.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+Gradle Test Executor 42 finished executing tests.
+
+> Task :usecase:test FAILED
+Custom actions are attached to task ':usecase:test'.
+Build cache key for task ':usecase:test' is 3a5611166b60e5c386772c09f50e8c0a
+Task ':usecase:test' is not up-to-date because:
+  Task has failed previously.
+Starting process 'Gradle Test Executor 42'. Working directory: /Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase Command: /opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home/bin/java -Dorg.gradle.internal.worker.tmpdir=/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase/build/tmp/test/work -Dorg.gradle.native=false -XX:+AllowRedefinitionToAddDeleteMethods -javaagent:/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase/build/tmp/.cache/expanded/zip_0bd0851504e6286cb5fc6f37a81e25cc/jacocoagent.jar=destfile=build/jacoco/test.exec,append=true,inclnolocationclasses=false,dumponexit=true,output=file,jmx=false @/Users/jhlara/.gradle/.tmp/gradle-worker-classpath12012021141362839952txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=CO -Duser.language=es -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 42'
+Successfully started process 'Gradle Test Executor 42'
+OpenJDK 64-Bit Server VM warning: Option AllowRedefinitionToAddDeleteMethods was deprecated in version 13.0 and will likely be removed in a future release.
+Finished generating test XML results (0.0 secs) into: /Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase/build/test-results/test
+Generating HTML test report...
+Finished generating test html results (0.001 secs) into: /Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase/build/reports/tests/test
+
+10 problems were found storing the configuration cache, 1 of which seems unique.
+- Task `:validateStructure` of type `co.com.bancolombia.task.ValidateStructureTask`: invocation of 'Task.project' at execution time is unsupported.
+  See https://docs.gradle.org/8.5/userguide/configuration_cache.html#config_cache:requirements:use_project_during_execution
+
+See the complete report at file:///Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/build/reports/configuration-cache/2xyjyxae0kk0zfk4a20d2k3ow/doe6p6kpgy52g4qbi2m5xsmrd/configuration-cache-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':usecase:test'.
+> There were failing tests. See the report at: file:///Users/jhlara/Downloads/authentication-service-feature-HU001-save-user/domain/usecase/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 2s
+6 actionable tasks: 2 executed, 4 up-to-date
+Watched directory hierarchies: [/Users/jhlara/Downloads/authentication-service-feature-HU001-save-user]
+Configuration cache entry discarded with 10 problems.

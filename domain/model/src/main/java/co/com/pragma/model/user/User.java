@@ -4,8 +4,8 @@ import lombok.*;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-//import lombok.NoArgsConstructor;
-
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,17 +13,52 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class User {
-    //se colocan los atributos
     private BigInteger id;
     private String name;
     private String lastname;
-    private LocalDate date;
+    private LocalDate dateOfBirth;
     private String address;
     private String phone;
-    private String mail;
-    private double salary;
-    private String message;
-    private Role role;
-    private String passwordHash;
+    private String email;
+    private String password;
+    private Double salary;
+    private boolean enabled;
+    private boolean accountNonExpired;
+    private boolean credentialsNonExpired;
+    private boolean accountNonLocked;
+    @Builder.Default
+    private Set<Role> roles = new HashSet<>();
 
+    public User(String email, String password, Set<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.enabled = true;
+        this.accountNonExpired = true;
+        this.credentialsNonExpired = true;
+        this.accountNonLocked = true;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
+    }
+    
+    /**
+     * Alias for getEmail() to maintain backward compatibility
+     * @return the email address
+     */
+    public String getMail() {
+        return this.email;
+    }
+    
+    /**
+     * @return the user's salary
+     */
+    public Double getSalary() {
+        return this.salary;
+    }
 }

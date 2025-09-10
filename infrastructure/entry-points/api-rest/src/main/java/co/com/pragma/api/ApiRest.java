@@ -4,6 +4,8 @@ import co.com.pragma.api.dto.CreateUserDto;
 import co.com.pragma.api.dto.UserDto;
 import co.com.pragma.api.mapper.UserDtoMapper;
 import co.com.pragma.model.user.ApiResponse;
+import co.com.pragma.model.user.Role;
+import co.com.pragma.model.user.RoleName;
 import co.com.pragma.usecase.usuario.UserUseCase;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -11,15 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static co.com.pragma.common.Constants.*;
-
 
 @RestController
 @RequestMapping(value = "/api/v1/user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,29 +32,42 @@ public class ApiRest {
     private final UserDtoMapper userMapper;
     private static final Logger log = LoggerFactory.getLogger(ApiRest.class);
 
-    @PreAuthorize("hasAnyRole('ADMIN','ADVISOR')")
+
     @PostMapping
-    public Mono<ResponseEntity<ApiResponse>> createUser(@RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserDto createUserDto) {
         log.info(START_CREATE_USER, createUserDto);
-        return userUseCase.saveUser(userMapper.toModel(createUserDto))
-                .map(apiResponse -> ResponseEntity.status(HttpStatus.CREATED).body(apiResponse));
+        var user = userMapper.toModel(createUserDto);
+        if (createUserDto.password() != null) {
+            user.setPassword(createUserDto.password());
+        }
+        if (createUserDto.role() != null && !createUserDto.role().isBlank()) {
+            var raw = createUserDto.role().trim().toUpperCase();
+            var enumName = raw.startsWith("ROLE_") ? raw : "ROLE_" + raw;
+            var role = Role.from(RoleName.valueOf(enumName));
+            var roles = new HashSet<Role>();
+            roles.add(role);
+            user.setRoles(roles);
+        }
+
+        ApiResponse apiResponse = userUseCase.saveUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
 
     @GetMapping
-    public Mono<ResponseEntity<List<UserDto>>> getAllUser(){
+    public ResponseEntity<List<UserDto>> getAllUsers(){
         log.info(START_GET_ALL_USERS);
-        return userUseCase.getAllUsers()
+        List<UserDto> users = userUseCase.getAllUsers().stream()
                 .map(userMapper::toResponse)
-                .collectList()
-                .map(ResponseEntity::ok);
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(users);
     }
 
     @DeleteMapping(path = "/{id}")
-    public Mono<ResponseEntity<Void>> deleteUser(@PathVariable(name="id") BigInteger id){
+    public ResponseEntity<Void> deleteUser(@PathVariable(name="id") BigInteger id){
         log.info(START_DELETE, id);
-        return userUseCase.deleteUserId(id)
-                .thenReturn(ResponseEntity.ok().build());
+        userUseCase.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 
 }

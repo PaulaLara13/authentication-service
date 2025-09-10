@@ -20,6 +20,10 @@ spring:
     databasePlatform: "org.hibernate.dialect.H2Dialect"
     hibernate:
         ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 management:
   endpoints:
     web:
@@ -31,6 +35,3 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
-app:
-  jwt:
-    secret: "iboiiboibibiubiubiuboiiboibibiubiub"
