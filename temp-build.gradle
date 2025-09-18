@@ -1,0 +1,16 @@
+// Temporary build file to run tests without validation
+subprojects {
+    tasks.withType(Test) {
+        dependsOn = []
+    }
+}
+
+task runTests(type: Test) {
+    dependsOn ':usecase:testClasses'
+    testClassesDirs = project(':usecase').sourceSets.test.output.classesDirs
+    classpath = project(':usecase').sourceSets.test.runtimeClasspath
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
+    useJUnitPlatform()
+}

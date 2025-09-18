@@ -1,0 +1,62 @@
+apply plugin: 'org.springframework.boot'
+
+// Use Spring Boot's default logging (spring-boot-starter-logging) to avoid version mismatches
+
+dependencies {
+    // Spring Boot Starters (with default logging)
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    runtimeOnly 'io.r2dbc:r2dbc-h2'
+    runtimeOnly 'com.h2database:h2'
+    // OpenAPI/Swagger (Springdoc for WebFlux)
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0'
+    // Project Modules
+    implementation project(':api-rest')
+    implementation project(':r2dbc-repository')
+    implementation project(':model')
+    implementation project(':usecase')
+    
+    // JWT
+    implementation "io.jsonwebtoken:jjwt-api:${rootProject.ext.jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${rootProject.ext.jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${rootProject.ext.jjwtVersion}"
+    
+    // Configuration is now handled with default values in the code
+    
+    // Testing
+    testImplementation 'org.springframework:spring-web'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'com.tngtech.archunit:archunit:1.4.1'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    
+    // Development
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    
+    // Utilities
+    implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
+}
+
+// Disable configuration cache for the main task
+tasks.withType(JavaExec).configureEach {
+    notCompatibleWithConfigurationCache("The task uses JavaExec which is not compatible with configuration cache")
+}
+
+tasks.register('explodedJar', Copy) {
+    with jar
+    into layout.buildDirectory.dir("exploded")
+}
+
+jar {
+    // To disable the *-plain.jar
+    enabled = false
+}
+
+bootJar {
+    // Sets output jar name
+    archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
+}

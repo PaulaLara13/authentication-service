@@ -1,0 +1,50 @@
+package co.com.pragma.api.exception;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.codec.DecodingException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.resource.NoResourceFoundException;
+import reactor.core.publisher.Mono;
+import static co.com.pragma.common.Constants.*;
+import co.com.pragma.model.user.exception.InvalidCredentialsException;
+
+@RestControllerAdvice
+public class UserExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(UserExceptionHandler.class);
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Mono<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        log.warn("Authentication error: {}", ex.getMessage());
+        return Mono.just(new ErrorResponse("Credenciales inválidas"));
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, DecodingException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Mono<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+        log.warn(HANDLE_BAD_REQUEST, ex.getMessage());
+        return Mono.just(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Mono<ErrorResponse> handleNotFound(NoResourceFoundException ex) {
+        log.debug("Recurso estático no encontrado: {}", ex.getMessage());
+        return Mono.just(new ErrorResponse("Recurso no encontrado"));
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Mono<ErrorResponse> handleGeneral(Exception ex) {
+        log.warn(HANDLE_GENERAL, ex.getMessage(), ex);
+        return Mono.just(new ErrorResponse(UNEXPECTED_ERROR));
+    }
+
+
+    public record ErrorResponse(String message) {
+    }
+}
