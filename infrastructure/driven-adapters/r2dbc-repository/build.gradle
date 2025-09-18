@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':model')
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'io.projectreactor:reactor-core'
+}
