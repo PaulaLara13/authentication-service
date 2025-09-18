@@ -1,4 +1,4 @@
-package co.com.pragma.infrastructure.security.dto;
+package co.com.pragma.api.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

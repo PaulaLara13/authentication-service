@@ -13,11 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import java.math.BigInteger;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 
@@ -39,10 +41,10 @@ class ApiRestTest {
         ApiResponse apiResponse = new ApiResponse("User created successfully");
 
         when(userMapper.toModel(createUserDto)).thenReturn(user);
-        when(userUseCase.saveUser(user)).thenReturn(apiResponse);
+        when(userUseCase.saveUser(user)).thenReturn(Mono.just(apiResponse));
 
         // Act
-        var response = apiRest.createUser(createUserDto);
+        ResponseEntity<ApiResponse> response = apiRest.createUser(createUserDto).block();
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -62,16 +64,15 @@ class ApiRestTest {
         UserDto dto1 = mock(UserDto.class);
         UserDto dto2 = mock(UserDto.class);
 
-        when(userUseCase.getAllUsers()).thenReturn(List.of(user1, user2));
+        when(userUseCase.getAllUsers()).thenReturn(Flux.just(user1, user2));
         when(userMapper.toResponse(user1)).thenReturn(dto1);
         when(userMapper.toResponse(user2)).thenReturn(dto2);
 
         // Act
-        var response = apiRest.getAllUsers();
+        var list = apiRest.getAllUsers().collectList().block();
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).containsExactly(dto1, dto2);
+        assertThat(list).containsExactly(dto1, dto2);
 
         // Verify
         verify(userUseCase).getAllUsers();
@@ -83,14 +84,13 @@ class ApiRestTest {
     @Test
     void getAllUsers_whenNoUsers_shouldReturnEmptyList() {
         // Arrange
-        when(userUseCase.getAllUsers()).thenReturn(List.of());
+        when(userUseCase.getAllUsers()).thenReturn(Flux.empty());
 
         // Act
-        var response = apiRest.getAllUsers();
+        var list = apiRest.getAllUsers().collectList().block();
 
         // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEmpty();
+        assertThat(list).isEmpty();
 
         // Verify
         verify(userUseCase).getAllUsers();
@@ -102,10 +102,10 @@ class ApiRestTest {
     void deleteUser_shouldCallUseCaseAndReturn200() {
         // Arrange
         BigInteger id = BigInteger.valueOf(123L);
-        doNothing().when(userUseCase).deleteUser(id);
+        when(userUseCase.deleteUser(id)).thenReturn(Mono.empty());
 
         // Act
-        var response = apiRest.deleteUser(id);
+        ResponseEntity<Void> response = apiRest.deleteUser(id).block();
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

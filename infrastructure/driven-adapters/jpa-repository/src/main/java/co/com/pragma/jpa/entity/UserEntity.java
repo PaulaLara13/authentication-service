@@ -1,5 +1,7 @@
 package co.com.pragma.jpa.entity;
 
+import co.com.pragma.model.user.Role;
+import co.com.pragma.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserEntity {
+public class UserEntity extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
@@ -25,9 +27,9 @@ public class UserEntity {
     private String lastname;
     private LocalDate date;
     private String address;
-    private Integer phone;
+    private String  phone;
     private String email;
-    private double salary;
+    private Double salary;
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

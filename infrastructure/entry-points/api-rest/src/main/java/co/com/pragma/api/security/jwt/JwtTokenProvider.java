@@ -1,6 +1,6 @@
-package co.com.pragma.infrastructure.security.jwt;
+package co.com.pragma.api.security.jwt;
 
-import co.com.pragma.infrastructure.security.UserPrincipal;
+import co.com.pragma.api.security.UserPrincipal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;

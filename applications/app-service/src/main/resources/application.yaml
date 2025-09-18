@@ -1,5 +1,9 @@
 server:
   port: 8080
+  error:
+    include-exception: true
+    include-message: ALWAYS
+    include-stacktrace: ALWAYS
 spring:
   application:
     name: "authentication-service"
@@ -11,19 +15,23 @@ spring:
       path: "/h2"
   profiles:
     include: null
-  datasource:
-    url: jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: "sa"
-    password: "pass"
-    driverClassName: "org.h2.Driver"
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password: pass
   jpa:
-    databasePlatform: "org.hibernate.dialect.H2Dialect"
-    hibernate:
-        ddl-auto: create-drop
-    defer-datasource-initialization: true
+    open-in-view: false
   sql:
     init:
       mode: always
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
 management:
   endpoints:
     web:
@@ -35,3 +43,10 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+logging:
+  level:
+    root: INFO
+    co.com.pragma: DEBUG
+    org.springdoc: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG

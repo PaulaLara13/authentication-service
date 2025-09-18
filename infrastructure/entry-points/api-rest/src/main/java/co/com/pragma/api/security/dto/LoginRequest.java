@@ -1,4 +1,4 @@
-package co.com.pragma.infrastructure.security.dto;
+package co.com.pragma.api.security.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,43 +1,40 @@
 package co.com.pragma.api.config;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockFilterChain;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-
-import java.io.IOException;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
+import org.springframework.mock.web.server.MockServerWebExchange;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SecurityHeadersFilterTest {
 
     private SecurityHeadersFilter filter;
-    private MockHttpServletRequest request;
-    private MockHttpServletResponse response;
-    private FilterChain chain;
+    private MockServerWebExchange exchange;
+    private WebFilterChain chain;
 
     @BeforeEach
     void setUp() {
         filter = new SecurityHeadersFilter();
-        request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
-        chain = new MockFilterChain();
+        MockServerHttpRequest request = MockServerHttpRequest.get("/test").build();
+        exchange = MockServerWebExchange.from(request);
+        chain = (ex) -> Mono.empty();
     }
 
     @Test
-    void testDoFilter() throws IOException, ServletException {
-        filter.doFilter(request, response, chain);
+    void testFilterSetsSecurityHeaders() {
+        filter.filter(exchange, chain).block();
 
-        assertEquals("default-src 'self'; frame-ancestors 'self'; form-action 'self'", response.getHeader("Content-Security-Policy"));
-        assertEquals("max-age=31536000;", response.getHeader("Strict-Transport-Security"));
-        assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
-        assertEquals("", response.getHeader("Server"));
-        assertEquals("no-store", response.getHeader("Cache-Control"));
-        assertEquals("no-cache", response.getHeader("Pragma"));
-        assertEquals("strict-origin-when-cross-origin", response.getHeader("Referrer-Policy"));
+        ServerHttpResponse response = exchange.getResponse();
+        assertEquals("default-src 'self'; frame-ancestors 'self'; form-action 'self'", response.getHeaders().getFirst("Content-Security-Policy"));
+        assertEquals("max-age=31536000;", response.getHeaders().getFirst("Strict-Transport-Security"));
+        assertEquals("nosniff", response.getHeaders().getFirst("X-Content-Type-Options"));
+        assertEquals("", response.getHeaders().getFirst("Server"));
+        assertEquals("no-store", response.getHeaders().getFirst("Cache-Control"));
+        assertEquals("no-cache", response.getHeaders().getFirst("Pragma"));
+        assertEquals("strict-origin-when-cross-origin", response.getHeaders().getFirst("Referrer-Policy"));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.resource.NoResourceFoundException;
 import reactor.core.publisher.Mono;
 import static co.com.pragma.common.Constants.*;
 import co.com.pragma.model.user.exception.InvalidCredentialsException;
@@ -27,6 +28,13 @@ public class UserExceptionHandler {
     public Mono<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
         log.warn(HANDLE_BAD_REQUEST, ex.getMessage());
         return Mono.just(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Mono<ErrorResponse> handleNotFound(NoResourceFoundException ex) {
+        log.debug("Recurso estático no encontrado: {}", ex.getMessage());
+        return Mono.just(new ErrorResponse("Recurso no encontrado"));
     }
 
     @ExceptionHandler(Exception.class)
