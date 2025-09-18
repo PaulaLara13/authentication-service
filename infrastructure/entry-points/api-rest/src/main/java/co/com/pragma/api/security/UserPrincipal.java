@@ -1,4 +1,4 @@
-package co.com.pragma.infrastructure.security;
+package co.com.pragma.api.security;
 
 import co.com.pragma.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

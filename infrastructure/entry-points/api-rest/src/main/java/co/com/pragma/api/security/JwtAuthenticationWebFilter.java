@@ -1,6 +1,6 @@
-package co.com.pragma.infrastructure.security;
+package co.com.pragma.api.security;
 
-import co.com.pragma.infrastructure.security.jwt.JwtTokenProvider;
+import co.com.pragma.api.security.jwt.JwtTokenProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

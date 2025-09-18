@@ -2,6 +2,7 @@ package co.com.pragma.config;
 
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
+import co.com.pragma.model.user.gateways.PasswordHasher;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,13 +13,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -50,15 +51,22 @@ public class UseCasesConfigTest {
             // Create a mock UserRepository
             UserRepository userRepository = Mockito.mock(UserRepository.class);
             
-            // Configure the mock to return empty values for all methods
-            when(userRepository.getAllUsers()).thenReturn(Collections.emptyList());
-            when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-            when(userRepository.existsByMail(anyString())).thenReturn(false);
-            when(userRepository.saveUser(any(User.class))).thenReturn(new User());
-            // deleteUser is a void method, so we use doNothing()
-            Mockito.doNothing().when(userRepository).deleteUser(any(BigInteger.class));
+            // Configure the mock to return empty values for all methods (reactive)
+            when(userRepository.getAllUsers()).thenReturn(Flux.empty());
+            when(userRepository.findByEmail(anyString())).thenReturn(Mono.empty());
+            when(userRepository.existsByMail(anyString())).thenReturn(Mono.just(false));
+            when(userRepository.saveUser(any(User.class))).thenReturn(Mono.just(new User()));
+            when(userRepository.deleteUser(any(BigInteger.class))).thenReturn(Mono.empty());
             
             return userRepository;
+        }
+
+        @Bean
+        public PasswordHasher passwordHasher() {
+            PasswordHasher hasher = Mockito.mock(PasswordHasher.class);
+            when(hasher.encode(anyString())).thenAnswer(inv -> inv.getArgument(0));
+            when(hasher.matches(anyString(), anyString())).thenReturn(true);
+            return hasher;
         }
         
         @Bean

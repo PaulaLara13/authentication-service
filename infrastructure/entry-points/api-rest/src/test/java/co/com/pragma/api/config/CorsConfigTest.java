@@ -2,56 +2,41 @@ package co.com.pragma.api.config;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.core.Ordered;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
+import org.springframework.mock.web.server.MockServerWebExchange;
+import org.springframework.web.cors.reactive.CorsWebFilter;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = CorsConfig.class)
 class CorsConfigTest {
 
     private CorsConfig corsConfig;
+    private CorsWebFilter corsWebFilter;
 
     @BeforeEach
     void setUp() {
         corsConfig = new CorsConfig();
+        corsWebFilter = corsConfig.corsWebFilter("http://example.com,http://another.com");
     }
 
     @Test
-    void testCorsFilter() {
-        String origins = "http://example.com,http://another.com";
-        FilterRegistrationBean<CorsFilter> filterRegistrationBean = corsConfig.corsFilter(origins);
+    void givenPreflightRequest_whenFilter_thenCompletes() {
+        var request = MockServerHttpRequest
+                .method(HttpMethod.OPTIONS, "/api/v1/user")
+                .header("Origin", "http://example.com")
+                .header("Access-Control-Request-Method", "GET")
+                .header("Access-Control-Request-Headers", "Content-Type")
+                .build();
+        var exchange = MockServerWebExchange.from(request);
 
-        CorsFilter corsFilter = filterRegistrationBean.getFilter();
+        assertNotNull(corsWebFilter);
+        // Should not throw; completion means filter handled the exchange
+        corsWebFilter.filter(exchange, ex -> reactor.core.publisher.Mono.empty()).block();
 
-        // Create a new UrlBasedCorsConfigurationSource to access the configuration
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of(origins.split(",")));
-        config.setAllowedMethods(Arrays.asList("POST", "GET")); // TODO: Check others required methods
-        config.setAllowedHeaders(List.of(CorsConfiguration.ALL));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        CorsConfiguration retrievedConfig = source.getCorsConfigurations().get("/**");
-
-        assertNotNull(filterRegistrationBean);
-        assertEquals(Ordered.HIGHEST_PRECEDENCE, filterRegistrationBean.getOrder());
-        assertNotNull(corsFilter);
-        assertNotNull(retrievedConfig);
-        assertTrue(retrievedConfig.getAllowCredentials());
-        assertEquals(List.of("http://example.com", "http://another.com"), retrievedConfig.getAllowedOrigins());
-        assertEquals(List.of("POST", "GET"), retrievedConfig.getAllowedMethods());
-        assertEquals(List.of(CorsConfiguration.ALL), retrievedConfig.getAllowedHeaders());
+        ServerHttpResponse response = exchange.getResponse();
+        assertNotNull(response);
+        assertNotNull(response.getStatusCode());
     }
 }

@@ -1,31 +1,24 @@
 package co.com.pragma.api.config;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-
-@Configuration
-@WebFilter("/**")
-public class SecurityHeadersFilter implements Filter {
+@Component
+public class SecurityHeadersFilter implements WebFilter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletResponse header = (HttpServletResponse) response;
-        header.setHeader("Content-Security-Policy", "default-src 'self'; frame-ancestors 'self'; form-action 'self'");
-        header.setHeader("Strict-Transport-Security", "max-age=31536000;");
-        header.setHeader("X-Content-Type-Options", "nosniff");
-        header.setHeader("Server", "");
-        header.setHeader("Cache-Control", "no-store");
-        header.setHeader("Pragma", "no-cache");
-        header.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-        chain.doFilter(request, response);
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        var headers = exchange.getResponse().getHeaders();
+        headers.set("Content-Security-Policy", "default-src 'self'; frame-ancestors 'self'; form-action 'self'");
+        headers.set("Strict-Transport-Security", "max-age=31536000;");
+        headers.set("X-Content-Type-Options", "nosniff");
+        headers.set("Server", "");
+        headers.set("Cache-Control", "no-store");
+        headers.set("Pragma", "no-cache");
+        headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+        return chain.filter(exchange);
     }
 }

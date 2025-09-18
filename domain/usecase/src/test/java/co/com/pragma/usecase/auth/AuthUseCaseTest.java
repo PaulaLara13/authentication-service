@@ -6,6 +6,7 @@ import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.dto.JwtAuthenticationResponse;
 import co.com.pragma.model.user.dto.LoginRequest;
 import co.com.pragma.model.user.gateways.UserRepository;
+import co.com.pragma.model.user.gateways.PasswordHasher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +20,11 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,9 +33,14 @@ import static org.mockito.Mockito.times;
 @ExtendWith(MockitoExtension.class)
 class AuthUseCaseTest implements TestExecutionExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(AuthUseCaseTest.class);
+    private static final String EMAIL = "test@example.com";
+    private static final String PASSWORD = "password123";
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordHasher passwordHasher;
 
     @InjectMocks
     private AuthUseCase authUseCase;
@@ -48,93 +55,54 @@ class AuthUseCaseTest implements TestExecutionExceptionHandler {
         
         testUser = User.builder()
                 .id(BigInteger.ONE)
-                .email("test@example.com")
-                .password("password123")
+                .email(EMAIL)
+                .password(PASSWORD)
                 .roles(roles)
                 .build();
                 
         loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password123");
+        loginRequest.setEmail(EMAIL);
+        loginRequest.setPassword(PASSWORD);
     }
 
     @Test
-    void authenticateUser_Success() {
-        try {
-            // Given
-            logger.info("===== STARTING TEST: authenticateUser_Success =====");
-            logger.info("1. Setting up test data...");
-            logger.info("Test user: {}", testUser);
-            logger.info("Login request: {}", loginRequest);
-            
-            // Configure mock
-            logger.info("2. Configuring mock for userRepository.findByEmail...");
-            when(userRepository.findByEmail(anyString()))
-                .thenAnswer(invocation -> {
-                    String email = invocation.getArgument(0);
-                    logger.info("Mock called with email: {}", email);
-                    logger.info("Returning test user: {}", testUser);
-                    return Optional.of(testUser);
-                });
-            
-            // When
-            logger.info("3. Calling authUseCase.authenticateUser...");
-            JwtAuthenticationResponse response = authUseCase.authenticateUser(loginRequest);
-            logger.info("4. Authentication response received: {}", response);
-            
-            // Then
-            logger.info("5. Verifying response...");
-            assertNotNull(response, "Response should not be null");
-            logger.info("5.1. Response is not null - PASSED");
-            
-            logger.info("5.2. Verifying access token...");
-            assertNotNull(response.getAccessToken(), "Access token should not be null");
-            assertFalse(response.getAccessToken().isEmpty(), "Access token should not be empty");
-            logger.info("5.2. Access token is valid - PASSED");
-            
-            logger.info("5.3. Verifying refresh token...");
-            assertNotNull(response.getRefreshToken(), "Refresh token should not be null");
-            assertFalse(response.getRefreshToken().isEmpty(), "Refresh token should not be empty");
-            logger.info("5.3. Refresh token is valid - PASSED");
-            
-            // Verify the mock was called with the correct email
-            logger.info("6. Verifying mock interactions...");
-            verify(userRepository, times(1)).findByEmail(loginRequest.getEmail());
-            logger.info("6.1. Mock was called once with correct email - PASSED");
-            
-            logger.info("===== TEST COMPLETED SUCCESSFULLY =====");
-        } catch (Exception e) {
-            logger.error("!!!!! TEST FAILED !!!!!");
-            logger.error("Error type: {}", e.getClass().getName());
-            logger.error("Error message: {}", e.getMessage());
-            logger.error("Stack trace:", e);
-            
-            // Log additional debug information
-            logger.error("Current test user: {}", testUser);
-            logger.error("Current login request: {}", loginRequest);
-            
-            // Re-throw the exception to fail the test
-            throw e;
-        }
+    void givenValidCredentials_whenAuthenticateUser_thenReturnTokens() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Mono.just(testUser));
+        when(passwordHasher.matches(PASSWORD, PASSWORD)).thenReturn(true);
+
+        var mono = authUseCase.authenticateUser(loginRequest);
+
+        StepVerifier.create(mono)
+                .expectNextMatches(resp -> resp instanceof JwtAuthenticationResponse
+                        && resp.getAccessToken() != null
+                        && !resp.getAccessToken().isEmpty()
+                        && resp.getRefreshToken() != null
+                        && !resp.getRefreshToken().isEmpty())
+                .verifyComplete();
+
+        verify(userRepository, times(1)).findByEmail(loginRequest.getEmail());
     }
 
     @Test
-    void authenticateUser_UserNotFound() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-        
-        assertThrows(RuntimeException.class, () -> 
-            authUseCase.authenticateUser(loginRequest)
-        );
+    void givenUserNotFound_whenAuthenticateUser_thenThrowInvalidCredentials() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Mono.empty());
+
+        var mono = authUseCase.authenticateUser(loginRequest);
+
+        StepVerifier.create(mono)
+                .expectErrorMatches(t -> t instanceof co.com.pragma.model.user.exception.InvalidCredentialsException)
+                .verify();
     }
     
     @Test
-    void authenticateUser_EmptyPassword() {
+    void givenEmptyPassword_whenAuthenticateUser_thenThrowInvalidCredentials() {
         testUser.setPassword("");
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
-        
-        assertThrows(RuntimeException.class, () -> 
-            authUseCase.authenticateUser(loginRequest)
-        );
+        when(userRepository.findByEmail(anyString())).thenReturn(Mono.just(testUser));
+        var mono = authUseCase.authenticateUser(loginRequest);
+
+        StepVerifier.create(mono)
+                .expectErrorMatches(t -> t instanceof co.com.pragma.model.user.exception.InvalidCredentialsException)
+                .verify();
     }
     
     @Override

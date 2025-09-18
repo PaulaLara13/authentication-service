@@ -38,7 +38,6 @@ public class User {
         this.credentialsNonExpired = true;
         this.accountNonLocked = true;
     }
-
     public void addRole(Role role) {
         this.roles.add(role);
     }
@@ -46,18 +45,11 @@ public class User {
     public void removeRole(Role role) {
         this.roles.remove(role);
     }
-    
-    /**
-     * Alias for getEmail() to maintain backward compatibility
-     * @return the email address
-     */
+
     public String getMail() {
         return this.email;
     }
-    
-    /**
-     * @return the user's salary
-     */
+
     public Double getSalary() {
         return this.salary;
     }
